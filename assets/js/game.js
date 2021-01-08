@@ -4,31 +4,42 @@
   //    * Defeat each enemy-robot
   // "LOSE" - Player robot's health is zero or less  
 
+var fightOrSkip = function() {
+   // ask player if they'd liked to fight or run 
+   var promptFight = window.prompt("Would you like to FIGHT or SKIP this battle? Enter 'FIGHT' or 'SKIP' to choose.");
+   promptFight = promptFight.toLowerCase();
+
+   if (promptFight === "" || promptFight === null) {
+    window.alert("You need to provide a valid answer! Please try again.");
+    return fightOrSkip();
+  }
+
+  // if player choses to skip, confirm and then stop loop
+  if (promptFight === "skip" || promptFight === "SKIP") {
+    // confirm player wants to skip
+    var confirmSkip = window.confirm("Are you sure you'd like to quit?");
+   
+    // if yes (true), leave fight
+    if (confirmSkip) {
+      window.alert(playerInfo.name + " has decided to skip this fight. Goodbye!");
+      // subtract money from playerInfo.money for skipping
+      playerInfo.money = Math.max(0, playerInfo.money - 10);
+      return true;
+      // shop();
+    }
+   }
+   return false; 
+};
+
 var fight = function(enemy) {
  
     // repeat and execute as long as the enemy-robot is alive
     while(enemy.health > 0 && playerInfo.health > 0) {
-    
       // ask player if they'd liked to fight or run 
-      var promptFight = window.prompt("Would you like to FIGHT or SKIP this battle? Enter 'FIGHT' or 'SKIP' to choose.");
-
-      // if player choses to skip, confirm and then stop loop
-      if (promptFight === "skip" || promptFight === "SKIP") {
-
-        // confirm player wants to skip
-        var confirmSkip = window.confirm("Are you sure you'd like to quit?");
-      
-        // if yes (true), leave fight
-        if (confirmSkip) {
-          window.alert(playerInfo.name + " has decided to skip this fight. Goodbye!");
-          // subtract money from playerInfo.money for skipping
-          playerInfo.money = Math.max(0, playerInfo.money - 10);
-          console.log("playerInfo.money", playerInfo.money);
-          break;
-        }
+      if (fightOrSkip()) {
+        break;
       }
 
-      
       // generate random damage value based on player's attack power
       var damage = randomNumber(playerInfo.attack - 3, playerInfo.attack);
 
@@ -70,7 +81,7 @@ var fight = function(enemy) {
         window.alert(playerInfo.name + " still has " + playerInfo.health + " health left.");
       }
     }
-  };
+};
 
 var startGame = function() {
   // reset player stats
@@ -178,7 +189,10 @@ var getPlayerName = function() {
   while (name === "" || name === null) {
     name = prompt("What is your robot's name?");
   }
-}
+
+  console.log("Your robot's name is " + name);
+  return name;
+};
 
 var playerInfo = {
   name: getPlayerName(),
